@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>连板梯队 · 数字能量八星涨停复盘</title>
+<style>
+:root{--bg:#0f1420;--card:#1a2130;--card-2:#212a3d;--border:#2a3448;--text:#e6e9f2;--text-sub:#8b94ab;--primary:#7c6cf0;--primary-soft:#2d2656;--up:#e8443a;--shadow:0 2px 14px rgba(0,0,0,.35)}
+[data-theme="dark"]{--bg:#0f1420;--card:#1a2130;--card-2:#212a3d;--border:#2a3448;--text:#e6e9f2;--text-sub:#8b94ab;--primary:#7c6cf0;--primary-soft:#2d2656;--shadow:0 2px 14px rgba(0,0,0,.35)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"PingFang SC","Microsoft YaHei",sans-serif;font-size:14px;line-height:1.5;min-height:100vh}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:14px}
+.brand-logo{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#6b5ce7,#9d8bff);color:#fff;font-size:22px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.brand-title{font-size:20px;font-weight:700}
+.brand-sub{font-size:12px;color:var(--text-sub);margin-top:2px}
+.topbar-right{display:flex;align-items:center;gap:14px}
+.toggle{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none;color:var(--text-sub);font-size:13px;position:relative}
+.switch{width:40px;height:22px;border-radius:11px;background:#d5d8e5;position:relative;transition:background .2s}
+.switch::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .2s}
+.toggle.on .switch{background:var(--primary)}
+.toggle.on .switch::after{transform:translateX(18px)}
+.btn{padding:8px 18px;border-radius:10px;border:none;cursor:pointer;font-size:13px;font-weight:500;background:var(--primary);color:#fff}
+.date-badge{padding:8px 14px;border-radius:10px;background:var(--card);border:1px solid var(--border);color:var(--text-sub);font-size:13px}
+.view-tabs{display:flex;gap:8px;padding:0 28px;margin-bottom:18px}
+.view-tab{padding:9px 20px;border-radius:10px;cursor:pointer;font-size:14px;background:var(--card);border:1px solid var(--border);color:var(--text-sub)}
+.view-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.search-box{padding:9px 16px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:14px;width:220px;outline:none}
+.search-box:focus{border-color:var(--primary)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:0 28px;margin-bottom:20px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 22px;box-shadow:var(--shadow)}
+.stat-num{font-size:30px;font-weight:700}
+.stat-label{font-size:13px;color:var(--text-sub);margin-top:6px}
+.section{margin:0 28px 18px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 22px;box-shadow:var(--shadow)}
+.section-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.badge-num{width:38px;height:38px;border-radius:10px;color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700}
+.b1{background:#8a90a6}.b2{background:#4a7fe8}.b3{background:#2bb673}.b4{background:#f39c3d}.b5{background:#e8634f}
+.section-title{font-size:17px;font-weight:700}
+.section-count{font-size:12px;color:var(--text-sub);background:var(--card-2);padding:2px 10px;border-radius:10px}
+.stock-row{display:flex;flex-wrap:wrap;gap:10px;padding-top:10px;border-top:1px dashed var(--border)}
+.stock-row:first-of-type{border-top:none;padding-top:0}
+.stock-chip{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:10px;background:var(--card-2);border:1px solid var(--border);font-size:13px}
+.stock-code{color:var(--text-sub);font-size:12px;font-family:Consolas,monospace}
+.stock-name{font-weight:600}
+.stock-ind{color:#fff;font-size:11px;background:#6b7a99;padding:2px 8px;border-radius:5px;font-weight:600}
+.auction-pct{font-weight:700;font-size:12px}
+.auction-amt{color:#f5a623;font-size:11px}
+.auction-avr{color:#9b59d0;font-size:11px}
+.up{color:#e8443a}.down{color:#17a66a}
+.judge-good{color:#2bb673;font-size:11px;font-weight:700}
+.judge-bad{color:#e8443a;font-size:11px;font-weight:700}
+.tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;color:#fff}
+.t-shengqi{background:#2bb673}.t-yannian{background:#f37a3d}.t-tianyi{background:#2bb673}.t-fuwei{background:#2bb673}
+.t-jueming{background:#e8443a}.t-huohai{background:#4a7fe8}.t-liusha{background:#9b59d0}.t-wugui{background:#9b59d0}
+.t-long{background:#f39c3d}
+.energy-pop{position:absolute;top:32px;right:0;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;box-shadow:0 8px 30px rgba(0,0,0,.15);min-width:160px;display:none;z-index:50}
+.energy-pop.show{display:block}
+.energy-pop h4{font-size:13px;margin-bottom:10px;color:var(--text-sub)}
+.energy-pop label{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px;cursor:pointer}
+.energy-pop input{width:15px;height:15px;accent-color:var(--primary)}
+.strategy-bar{display:flex;flex-wrap:wrap;gap:10px;padding:0 28px;margin-bottom:18px}
+.sbtn{padding:10px 18px;border-radius:10px;cursor:pointer;font-size:14px;background:var(--card);border:1px solid var(--border);color:var(--text)}
+.sbtn.active{background:linear-gradient(135deg,#e8443a,#f37a3d);color:#fff;border-color:transparent}
+.filter-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:0 28px;margin-bottom:18px}
+.filter-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}
+.filter-label{font-size:13px;color:var(--text-sub);margin-bottom:10px;font-weight:600}
+.filter-chips{display:flex;flex-wrap:wrap;gap:6px}
+.fchip{padding:5px 12px;border-radius:8px;background:var(--card-2);border:1px solid var(--border);cursor:pointer;font-size:12px;color:var(--text)}
+.fchip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.scan-info{padding:0 28px;margin-bottom:14px;color:var(--text-sub);font-size:13px}
+.ind-group{margin:0 28px 14px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px}
+.ind-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;font-weight:700;font-size:15px}
+.ind-count{font-size:12px;color:var(--text-sub);background:var(--card-2);padding:2px 10px;border-radius:10px;font-weight:400}
+.result-float{position:fixed;right:28px;bottom:28px;width:320px;background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:0 10px 40px rgba(0,0,0,.18);z-index:100;overflow:hidden}
+.result-float.hidden{display:none}
+.result-head{padding:14px 16px;font-weight:700;border-bottom:1px solid var(--border);display:flex;justify-content:space-between}
+.result-close{cursor:pointer;color:var(--text-sub)}
+.result-item{padding:10px 16px;border-bottom:1px solid var(--border);font-size:13px}
+.result-item:last-child{border-bottom:none}
+@media(max-width:900px){.stats,.filter-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand"><div class="brand-logo">8</div><div><div class="brand-title">连板梯队</div><div class="brand-sub">数字能量八星 · 涨停复盘</div></div></div>
+  <div class="topbar-right">
+    <div class="toggle on" id="toggleEnergy"><span class="switch"></span><span>数字能量 ▾</span>
+      <div class="energy-pop" id="energyPop">
+        <h4>数字能量标签</h4>
+        <label><input type="checkbox" id="chkMaster" checked> 启用数字能量</label>
+        <label><input type="checkbox" class="chk-tag" data-tag="生气" checked> 生气</label>
+        <label><input type="checkbox" class="chk-tag" data-tag="延年" checked> 延年</label>
+        <label><input type="checkbox" class="chk-tag" data-tag="天医" checked> 吉(天医)</label>
+        <label><input type="checkbox" class="chk-tag" data-tag="伏位" checked> 伏位</label>
+        <label><input type="checkbox" class="chk-tag" data-tag="绝命" checked> 绝命</label>
+        <label><input type="checkbox" class="chk-tag" data-tag="祸害" checked> 害(祸害)</label>
+        <label><input type="checkbox" class="chk-tag" data-tag="六煞" checked> 六煞</label>
+        <label><input type="checkbox" class="chk-tag" data-tag="五鬼" checked> 五鬼</label>
+      </div>
+    </div>
+    <button class="btn" onclick="location.reload()">刷新数据</button>
+    <div class="date-badge" id="dateBadge">数据日期</div>
+  </div>
+</div>
+
+<div class="view-tabs">
+  <div class="view-tab active" data-view="ladder" onclick="switchView('ladder')">连板梯队</div>
+  <div class="view-tab" data-view="picker" onclick="switchView('picker')">选股器</div>
+  <input type="text" id="searchBox" class="search-box" placeholder="搜索股票名称/代码..." oninput="onSearch(this.value)">
+</div>
+
+<div class="stats">
+  <div class="stat-card"><div class="stat-num" id="statTotal">-</div><div class="stat-label">涨停总数</div></div>
+  <div class="stat-card"><div class="stat-num" id="statSector">-</div><div class="stat-label">板块梯队</div></div>
+  <div class="stat-card"><div class="stat-num" id="statMax">-</div><div class="stat-label">最高连板</div></div>
+  <div class="stat-card"><div class="stat-num" id="statJi">-</div><div class="stat-label">看好标的</div></div>
+</div>
+
+<div id="viewLadder"></div>
+<div id="extResult" style="display:none;padding:0 28px;margin-bottom:14px">
+  <div class="section" style="margin:0">
+    <div class="section-head"><div class="badge-num b3">搜</div><div class="section-title">外部搜索结果</div></div>
+    <div id="extBody"></div>
+  </div>
+</div>
+<div id="viewPicker" style="display:none">
+  <div class="filter-grid">
+    <div class="filter-box">
+      <div class="filter-label">连板高度</div>
+      <div class="filter-chips" data-f="lbc">
+        <div class="fchip active" data-v="all">全部</div>
+        <div class="fchip" data-v="1">首板</div>
+        <div class="fchip" data-v="2">2板</div>
+        <div class="fchip" data-v="3">3板</div>
+        <div class="fchip" data-v="4">4板</div>
+        <div class="fchip" data-v="5">5板+</div>
+      </div>
+    </div>
+    <div class="filter-box">
+      <div class="filter-label">市场类型</div>
+      <div class="filter-chips" data-f="market">
+        <div class="fchip active" data-v="all">全部</div>
+        <div class="fchip" data-v="沪主板">沪主板</div>
+        <div class="fchip" data-v="深主板">深主板</div>
+        <div class="fchip" data-v="创业板">创业板</div>
+        <div class="fchip" data-v="科创板">科创板</div>
+        <div class="fchip" data-v="北交所">北交所</div>
+      </div>
+    </div>
+    <div class="filter-box">
+      <div class="filter-label">流通市值</div>
+      <div class="filter-chips" data-f="ltsz">
+        <div class="fchip active" data-v="all">全部</div>
+        <div class="fchip" data-v="0-30">&lt;30亿</div>
+        <div class="fchip" data-v="30-50">30-50亿</div>
+        <div class="fchip" data-v="50-80">50-80亿</div>
+        <div class="fchip" data-v="80-120">80-120亿</div>
+        <div class="fchip" data-v="120-9999">120亿+</div>
+      </div>
+    </div>
+    <div class="filter-box">
+      <div class="filter-label">竞价涨幅 <span style="color:var(--text-sub);font-weight:400">（参考）</span></div>
+      <div class="filter-chips" data-f="apct">
+        <div class="fchip active" data-v="all">全部</div>
+        <div class="fchip" data-v="down">低开</div>
+        <div class="fchip" data-v="0-3">0-3%</div>
+        <div class="fchip" data-v="3-7">3-7%</div>
+        <div class="fchip" data-v="7+">7%+</div>
+        <div class="fchip" data-v="zt">涨停</div>
+      </div>
+    </div>
+    <div class="filter-box">
+      <div class="filter-label">竞价量比 <span style="color:var(--text-sub);font-weight:400">（参考）</span></div>
+      <div class="filter-chips" data-f="avr">
+        <div class="fchip active" data-v="all">全部</div>
+        <div class="fchip" data-v="0-1">&lt;1</div>
+        <div class="fchip" data-v="1-2">1-2</div>
+        <div class="fchip" data-v="2-5">2-5</div>
+        <div class="fchip" data-v="5+">5+</div>
+      </div>
+    </div>
+    <div class="filter-box">
+      <div class="filter-label">竞价金额 <span style="color:var(--text-sub);font-weight:400">（参考）</span></div>
+      <div class="filter-chips" data-f="aamt">
+        <div class="fchip active" data-v="all">全部</div>
+        <div class="fchip" data-v="0-2000">&lt;2000万</div>
+        <div class="fchip" data-v="2000-5000">2000-5000万</div>
+        <div class="fchip" data-v="5000-10000">5000万-1亿</div>
+        <div class="fchip" data-v="10000+">1亿+</div>
+      </div>
+    </div>
+  </div>
+  <div style="padding:0 28px;margin-bottom:14px"><button class="btn" onclick="toggleResult()">显示选股结果悬浮窗</button></div>
+  <div class="scan-info" id="scanInfo"></div>
+  <div id="indGroups"></div>
+</div>
+
+<div class="result-float hidden" id="resultFloat">
+  <div class="result-head">选股结果 <span class="result-close" onclick="toggleResult()">×</span></div>
+  <div id="resultList"></div>
+</div>
+
+<script>
+const D = {"date": "20261015", "yest": "20261015", "total": 36, "maxLbc": 5, "jiCount": 14, "industries": 26, "ladder": [{"boards": 5, "stocks": [{"code": "002343", "name": "慈文传媒", "lbc": 5, "pct": 10.0, "price": 8.91, "industry": "影视院线", "ltsz": 42.2, "hs": 16.172157287597656, "market": "深主板", "baby": ["延年×2", "祸害"], "judge": "good", "apct": 10.0, "aamt": 68167.0, "avr": 2.82, "long": "龙1"}, {"code": "002696", "name": "百洋股份", "lbc": 5, "pct": 10.051281929016113, "price": 10.73, "industry": "饲料", "ltsz": 35.9, "hs": 22.369281768798828, "market": "深主板", "baby": ["延年", "绝命×2"], "judge": "bad", "apct": 9.85, "aamt": 78188.0, "avr": 3.66, "long": "龙1"}]}, {"boards": 3, "stocks": [{"code": "000530", "name": "冰山冷热", "lbc": 3, "pct": 10.0, "price": 6.93, "industry": "通用设备", "ltsz": 41.6, "hs": 41.049583435058594, "market": "深主板", "baby": [], "judge": "neutral", "apct": 9.84, "aamt": 169732.0, "avr": 11.25, "long": "龙1"}, {"code": "001318", "name": "阳光乳业", "lbc": 3, "pct": 9.980557441711426, "price": 16.97, "industry": "饮料乳品", "ltsz": 48.0, "hs": 6.332854747772217, "market": "深主板", "baby": ["天医×2", "五鬼"], "judge": "good", "apct": 8.49, "aamt": 30075.0, "avr": 0.66, "long": "龙1"}]}, {"boards": 2, "stocks": [{"code": "605189", "name": "富春染织", "lbc": 2, "pct": 9.981515884399414, "price": 17.85, "industry": "纺织制造", "ltsz": 42.5, "hs": 17.10238265991211, "market": "沪主板", "baby": ["祸害", "五鬼"], "judge": "bad", "apct": 9.98, "aamt": 72418.0, "avr": 5.16, "long": "龙1"}, {"code": "601811", "name": "新华文轩", "lbc": 2, "pct": 10.021505355834961, "price": 25.58, "industry": "出版", "ltsz": 202.6, "hs": 8.094614028930664, "market": "沪主板", "baby": ["伏位", "五鬼×2"], "judge": "bad", "apct": -2.24, "aamt": 156697.0, "avr": 1.14, "long": "龙1"}]}, {"boards": 1, "stocks": [{"code": "002815", "name": "崇达技术", "lbc": 1, "pct": 9.9810791015625, "price": 23.25, "industry": "元件", "ltsz": 180.7, "hs": 1.778476357460022, "market": "深主板", "baby": ["生气", "五鬼"], "judge": "neutral", "apct": 9.98, "aamt": 32134.0, "avr": 0.21, "long": "龙1"}, {"code": "000626", "name": "远大控股", "lbc": 1, "pct": 9.975961685180664, "price": 9.15, "industry": "物流", "ltsz": 46.1, "hs": 7.6981892585754395, "market": "深主板", "baby": ["延年×2"], "judge": "good", "apct": 9.62, "aamt": 34833.0, "avr": 2.92, "long": "龙1"}, {"code": "301282", "name": "金禄电子", "lbc": 1, "pct": 20.0, "price": 49.92, "industry": "元件", "ltsz": 88.1, "hs": 6.562015056610107, "market": "创业板", "baby": ["生气×2", "绝命"], "judge": "good", "apct": 7.52, "aamt": 55803.0, "avr": 0.79, "long": "龙2"}, {"code": "001225", "name": "和泰机电", "lbc": 1, "pct": 10.0, "price": 38.5, "industry": "专用设备", "ltsz": 34.6, "hs": 6.556299686431885, "market": "深主板", "baby": ["伏位", "绝命"], "judge": "neutral", "apct": 3.11, "aamt": 22373.0, "avr": 1.88, "long": "龙1"}, {"code": "000722", "name": "湖南发展", "lbc": 1, "pct": 10.015772819519043, "price": 13.95, "industry": "电力", "ltsz": 64.8, "hs": 5.444774150848389, "market": "深主板", "baby": ["天医", "伏位"], "judge": "good", "apct": 2.76, "aamt": 34625.0, "avr": 1.07, "long": "龙1"}, {"code": "002543", "name": "万和电气", "lbc": 1, "pct": 10.055866241455078, "price": 7.88, "industry": "厨卫电器", "ltsz": 52.1, "hs": 5.564089298248291, "market": "深主板", "baby": ["延年"], "judge": "good", "apct": 0.0, "aamt": 28770.0, "avr": 2.57, "long": "龙1"}, {"code": "605003", "name": "众望布艺", "lbc": 1, "pct": 10.0, "price": 25.96, "industry": "服装家纺", "ltsz": 28.6, "hs": 2.3651819229125977, "market": "沪主板", "baby": [], "judge": "neutral", "apct": -0.17, "aamt": 6549.0, "avr": 2.75, "long": "龙1"}, {"code": "000995", "name": "皇台酒业", "lbc": 1, "pct": 10.041152000427246, "price": 13.37, "industry": "白酒Ⅱ", "ltsz": 23.7, "hs": 14.974873542785645, "market": "深主板", "baby": ["伏位"], "judge": "good", "apct": -0.41, "aamt": 34321.0, "avr": 1.38, "long": "龙1"}, {"code": "600281", "name": "华阳新材", "lbc": 1, "pct": 9.91561222076416, "price": 5.21, "industry": "小金属", "ltsz": 26.8, "hs": 10.578584671020508, "market": "沪主板", "baby": ["生气", "五鬼"], "judge": "neutral", "apct": -0.42, "aamt": 27651.0, "avr": 3.08, "long": "龙1"}, {"code": "603535", "name": "嘉诚国际", "lbc": 1, "pct": 9.967320442199707, "price": 6.73, "industry": "物流", "ltsz": 34.4, "hs": 3.725975751876831, "market": "沪主板", "baby": [], "judge": "neutral", "apct": -0.49, "aamt": 12592.0, "avr": 4.5, "long": "龙3"}, {"code": "600668", "name": "尖峰集团", "lbc": 1, "pct": 10.055096626281738, "price": 7.99, "industry": "水泥", "ltsz": 33.0, "hs": 8.303093910217285, "market": "沪主板", "baby": ["天医", "伏位"], "judge": "good", "apct": -0.83, "aamt": 26921.0, "avr": 9.69, "long": "龙1"}, {"code": "300111", "name": "向日葵", "lbc": 1, "pct": 20.064725875854492, "price": 3.71, "industry": "化学制药", "ltsz": 47.8, "hs": 18.777238845825195, "market": "创业板", "baby": ["伏位×2"], "judge": "good", "apct": -0.97, "aamt": 85300.0, "avr": 1.53, "long": "龙1"}, {"code": "603386", "name": "骏亚科技", "lbc": 1, "pct": 9.99456787109375, "price": 20.25, "industry": "元件", "ltsz": 66.1, "hs": 7.58062219619751, "market": "沪主板", "baby": ["天医", "伏位", "六煞"], "judge": "good", "apct": -0.98, "aamt": 48028.0, "avr": 1.56, "long": ""}, {"code": "603237", "name": "五芳斋", "lbc": 1, "pct": 10.020039558410645, "price": 16.47, "industry": "食品加工", "ltsz": 31.3, "hs": 4.61374044418335, "market": "沪主板", "baby": ["绝命", "祸害×2"], "judge": "bad", "apct": -1.0, "aamt": 14184.0, "avr": 4.8, "long": "龙1"}, {"code": "002945", "name": "华林证券", "lbc": 1, "pct": 10.007147789001465, "price": 15.39, "industry": "证券Ⅱ", "ltsz": 415.5, "hs": 3.0111680030822754, "market": "深主板", "baby": ["天医", "六煞"], "judge": "neutral", "apct": -1.22, "aamt": 122601.0, "avr": 8.41, "long": "龙1"}, {"code": "002103", "name": "广博股份", "lbc": 1, "pct": 9.970674514770508, "price": 7.5, "industry": "文娱用品", "ltsz": 29.1, "hs": 10.212053298950195, "market": "深主板", "baby": ["绝命"], "judge": "bad", "apct": -1.61, "aamt": 29500.0, "avr": 5.19, "long": "龙1"}, {"code": "603172", "name": "万丰股份", "lbc": 1, "pct": 10.02143669128418, "price": 20.53, "industry": "化学制品", "ltsz": 27.4, "hs": 3.7976367473602295, "market": "沪主板", "baby": ["天医×2", "祸害"], "judge": "good", "apct": -1.82, "aamt": 9793.0, "avr": 1.74, "long": "龙1"}, {"code": "003029", "name": "吉大正元", "lbc": 1, "pct": 10.016510963439941, "price": 19.99, "industry": "软件开发", "ltsz": 35.1, "hs": 8.442951202392578, "market": "深主板", "baby": ["六煞"], "judge": "bad", "apct": -2.04, "aamt": 29212.0, "avr": 1.86, "long": "龙1"}, {"code": "600721", "name": "百花医药", "lbc": 1, "pct": 10.045661926269531, "price": 12.05, "industry": "医疗服务", "ltsz": 46.3, "hs": 15.012239456176758, "market": "沪主板", "baby": ["天医", "绝命"], "judge": "neutral", "apct": -2.28, "aamt": 67716.0, "avr": 0.82, "long": "龙1"}, {"code": "002889", "name": "东方嘉盛", "lbc": 1, "pct": 9.974640846252441, "price": 13.01, "industry": "物流", "ltsz": 32.7, "hs": 5.011056900024414, "market": "深主板", "baby": ["生气", "伏位", "祸害"], "judge": "good", "apct": -2.28, "aamt": 15889.0, "avr": 8.06, "long": "龙2"}, {"code": "002836", "name": "新宏泽", "lbc": 1, "pct": 10.027854919433594, "price": 11.85, "industry": "包装印刷", "ltsz": 27.3, "hs": 3.871666669845581, "market": "深主板", "baby": ["生气", "六煞", "五鬼"], "judge": "bad", "apct": -2.51, "aamt": 10062.0, "avr": 1.34, "long": "龙1"}, {"code": "603329", "name": "上海雅仕", "lbc": 1, "pct": 10.0, "price": 11.33, "industry": "物流", "ltsz": 23.4, "hs": 10.368247032165527, "market": "沪主板", "baby": ["伏位", "祸害", "六煞"], "judge": "bad", "apct": -2.72, "aamt": 23017.0, "avr": 4.16, "long": ""}, {"code": "603999", "name": "读者传媒", "lbc": 1, "pct": 9.956709861755371, "price": 7.62, "industry": "出版", "ltsz": 43.9, "hs": 3.259291887283325, "market": "沪主板", "baby": ["生气", "伏位×2"], "judge": "good", "apct": -3.03, "aamt": 14039.0, "avr": 0.92, "long": "龙2"}, {"code": "600812", "name": "华北制药", "lbc": 1, "pct": 10.050251007080078, "price": 6.57, "industry": "化学制药", "ltsz": 112.7, "hs": 19.48380470275879, "market": "沪主板", "baby": ["绝命", "五鬼"], "judge": "bad", "apct": -3.18, "aamt": 211536.0, "avr": 1.96, "long": "龙2"}, {"code": "605058", "name": "澳弘电子", "lbc": 1, "pct": 10.003121376037598, "price": 70.49, "industry": "元件", "ltsz": 100.8, "hs": 15.32870864868164, "market": "沪主板", "baby": [], "judge": "neutral", "apct": -3.23, "aamt": 148886.0, "avr": 1.07, "long": ""}, {"code": "002748", "name": "世龙实业", "lbc": 1, "pct": 9.991942405700684, "price": 13.65, "industry": "化学原料", "ltsz": 32.8, "hs": 13.200399398803711, "market": "深主板", "baby": ["天医", "绝命", "六煞"], "judge": "bad", "apct": -3.38, "aamt": 40424.0, "avr": 2.36, "long": "龙1"}, {"code": "603200", "name": "上海洗霸", "lbc": 1, "pct": 10.0, "price": 53.35, "industry": "环境治理", "ltsz": 93.6, "hs": 14.602946281433105, "market": "沪主板", "baby": ["祸害"], "judge": "bad", "apct": -3.88, "aamt": 126818.0, "avr": 0.86, "long": "龙1"}, {"code": "603690", "name": "至纯科技", "lbc": 1, "pct": 9.995372772216797, "price": 23.77, "industry": "半导体", "ltsz": 91.0, "hs": 10.321914672851562, "market": "沪主板", "baby": ["绝命", "五鬼"], "judge": "bad", "apct": -4.16, "aamt": 90969.0, "avr": 1.42, "long": "龙1"}, {"code": "002134", "name": "天津普林", "lbc": 1, "pct": 9.986443519592285, "price": 24.34, "industry": "元件", "ltsz": 60.2, "hs": 10.946707725524902, "market": "深主板", "baby": ["延年", "天医", "绝命"], "judge": "good", "apct": -4.2, "aamt": 64714.0, "avr": 1.62, "long": "龙3"}, {"code": "603230", "name": "内蒙新华", "lbc": 1, "pct": 10.0, "price": 14.52, "industry": "出版", "ltsz": 51.3, "hs": 18.741113662719727, "market": "沪主板", "baby": ["祸害×2"], "judge": "bad", "apct": -5.91, "aamt": 93485.0, "avr": 1.25, "long": "龙3"}]}]};
+let showEnergy = true;
+let visibleTags = new Set(["生气","延年","天医","伏位","绝命","祸害","六煞","五鬼"]);
+let searchKw = "";
+function onSearch(v){
+  searchKw=v.trim().toLowerCase();
+  const cur=document.querySelector('.view-tab.active').dataset.view;
+  const ext=document.getElementById("extResult");
+  const q=v.trim();
+  // 6位数字代码 -> 直接拉行情
+  if(/^\d{6}$/.test(q)){
+    ext.style.display="";
+    document.getElementById("extBody").innerHTML='<span style="color:var(--text-sub)">加载中 '+q+' ...</span>';
+    searchExternal(q).then(info=>showExtResult(info)).catch(()=>{
+      document.getElementById("extBody").innerHTML='<span style="color:var(--text-sub)">未找到 '+q+'</span>';
+    });
+  } else if(q && !allStocks().some(s=>matchSearch(s))){
+    // 名称不在涨停池里 -> 用搜索API找代码
+    ext.style.display="";
+    document.getElementById("extBody").innerHTML='<span style="color:var(--text-sub)">搜索 '+q+' ...</span>';
+    searchByName(q).then(code=>{
+      if(code) return searchExternal(code).then(info=>showExtResult(info));
+      throw "nf";
+    }).catch(()=>{
+      document.getElementById("extBody").innerHTML='<span style="color:var(--text-sub)">未找到 "'+q+'"，请确认名称或输入6位代码</span>';
+    });
+  } else {
+    ext.style.display="none";
+  }
+  if(cur==='picker') renderPicker(); else renderLadder();
+}
+function showExtResult(info){
+  const tags=info.tags.map(t=>'<span class="tag '+tagClass(t)+'">'+t+'</span>').join("");
+  document.getElementById("extBody").innerHTML=
+    '<div class="stock-chip" style="font-size:14px;padding:10px 16px">'+
+    '<span class="stock-code">'+info.code+'</span>'+
+    '<span class="stock-name">'+info.name+'</span>'+
+    judgeHtml(info.judge)+tags+
+    '<span style="color:var(--text-sub);font-size:12px">现价'+info.price+' 涨跌'+info.pct+'%</span>'+
+    '</div>';
+}
+function searchByName(name){
+  return new Promise((resolve,reject)=>{
+    const cb="cb_"+Date.now();
+    window[cb]=function(data){
+      try{
+        const tbl=data.QuotationCodeTable;
+        const arr=(tbl&&tbl.Data)||[];
+        const hit=arr.find(x=>x.Name&&x.Name.indexOf(name)>=0);
+        window[cb]=undefined;
+        document.head.removeChild(document.getElementById("se_"+cb));
+        resolve(hit?hit.Code:null);
+      }catch(e){ reject(e); }
+    };
+    const s=document.createElement("script");
+    s.id="se_"+cb;
+    s.src="http://searchapi.eastmoney.com/api/suggest/get?input="+encodeURIComponent(name)+"&type=14&token=D43BF722C8E33BDC906FB84D85E326E8&count=5&cb="+cb;
+    s.onerror=()=>{ window[cb]=undefined; reject("err"); };
+    document.head.appendChild(s);
+    setTimeout(()=>{ if(window[cb]){ window[cb]=undefined; reject("timeout"); } },5000);
+  });
+}
+function matchSearch(s){ if(!searchKw) return true; return s.name.toLowerCase().includes(searchKw)||s.code.includes(searchKw); }
+
+// 数字能量计算
+const BABY={"14":"生气","41":"生气","67":"生气","76":"生气","39":"生气","93":"生气","28":"生气","82":"生气","19":"延年","91":"延年","78":"延年","87":"延年","34":"延年","43":"延年","26":"延年","62":"延年","13":"天医","31":"天医","68":"天医","86":"天医","49":"天医","94":"天医","27":"天医","72":"天医","11":"伏位","22":"伏位","88":"伏位","99":"伏位","66":"伏位","77":"伏位","33":"伏位","44":"伏位","12":"绝命","21":"绝命","69":"绝命","96":"绝命","48":"绝命","84":"绝命","37":"绝命","73":"绝命","17":"祸害","71":"祸害","89":"祸害","98":"祸害","46":"祸害","64":"祸害","23":"祸害","32":"祸害","16":"六煞","61":"六煞","47":"六煞","74":"六煞","38":"六煞","83":"六煞","29":"六煞","92":"六煞","18":"五鬼","81":"五鬼","79":"五鬼","97":"五鬼","36":"五鬼","63":"五鬼","24":"五鬼","42":"五鬼"};
+const JIXING=["生气","延年","天医","伏位"];
+function babyCalc(code){
+  const c={};
+  for(let i=0;i<code.length-1;i++){
+    const p=code[i]+code[i+1];
+    if(p[0]==="0") continue;
+    const t=BABY[p];
+    if(t) c[t]=(c[t]||0)+1;
+  }
+  const tags=[];
+  ["生气","延年","天医","伏位","绝命","祸害","六煞","五鬼"].forEach(k=>{ if(c[k]) tags.push(c[k]===1?k:k+"×"+c[k]); });
+  let ji=0,xiong=0;
+  Object.keys(c).forEach(k=>{ if(JIXING.includes(k)) ji+=c[k]; else xiong+=c[k]; });
+  const judge=ji>xiong?"good":(xiong>ji?"bad":"neutral");
+  return {tags,judge};
+}
+function searchExternal(code){
+  return new Promise((resolve,reject)=>{
+    const prefix=code.startsWith("60")?"sh":"sz";
+    const varName="v_"+prefix+code;
+    window[varName]=undefined;
+    const s=document.createElement("script");
+    s.src="http://qt.gtimg.cn/q="+prefix+code;
+    s.onload=function(){
+      try{
+        const raw=window[varName];
+        if(!raw) return reject("no data");
+        const p=raw.split("~");
+        if(p.length<50) return reject("bad data");
+        const bc=babyCalc(code);
+        resolve({code:code,name:p[1],price:p[3],pct:p[32],tags:bc.tags,judge:bc.judge});
+        document.head.removeChild(s);
+      }catch(e){ reject(e); }
+    };
+    s.onerror=()=>reject("error");
+    document.head.appendChild(s);
+  });
+}
+const sel = {lbc:new Set(["all"]), market:new Set(["all"]), ltsz:new Set(["all"]), apct:new Set(["all"]), avr:new Set(["all"]), aamt:new Set(["all"])};
+
+function pctMatch(v,r){
+  if(v==="down")return (r.apct||0)<0;
+  if(v==="0-3")return (r.apct||0)>=0&&(r.apct||0)<3;
+  if(v==="3-7")return (r.apct||0)>=3&&(r.apct||0)<7;
+  if(v==="7+")return (r.apct||0)>=7&&(r.apct||0)<9.8;
+  if(v==="zt")return (r.apct||0)>=9.8;
+  return true;
+}
+function avrMatch(v,r){
+  if(v==="0-1")return (r.avr||0)<1;
+  if(v==="1-2")return (r.avr||0)>=1&&(r.avr||0)<2;
+  if(v==="2-5")return (r.avr||0)>=2&&(r.avr||0)<5;
+  if(v==="5+")return (r.avr||0)>=5;
+  return true;
+}
+function amtMatch(v,r){
+  if(v==="0-2000")return (r.aamt||0)<2000;
+  if(v==="2000-5000")return (r.aamt||0)>=2000&&(r.aamt||0)<5000;
+  if(v==="5000-10000")return (r.aamt||0)>=5000&&(r.aamt||0)<10000;
+  if(v==="10000+")return (r.aamt||0)>=10000;
+  return true;
+}
+
+function tagClass(t){
+  if(t.indexOf("生气")===0) return "t-shengqi";
+  if(t.indexOf("延年")===0) return "t-yannian";
+  if(t.indexOf("天医")===0) return "t-tianyi";
+  if(t.indexOf("伏位")===0) return "t-fuwei";
+  if(t.indexOf("绝命")===0) return "t-jueming";
+  if(t.indexOf("祸害")===0) return "t-huohai";
+  if(t.indexOf("六煞")===0) return "t-liusha";
+  if(t.indexOf("五鬼")===0) return "t-wugui";
+  return "t-fuwei";
+}
+function tagVisible(t){ for(const k of visibleTags) if(t.indexOf(k)===0) return true; return false; }
+function judgeHtml(j){ return j==="good"?'<span class="judge-good">√看好</span>':j==="bad"?'<span class="judge-bad">×不看好</span>':''; }
+
+function allStocks(){
+  const arr=[];
+  D.ladder.forEach(g=>g.stocks.forEach(s=>arr.push(s)));
+  return arr;
+}
+function passFilter(s){
+  if(!sel.lbc.has("all")){
+    let ok=false;
+    for(const v of sel.lbc){ if(v==="5"?s.lbc>=5:s.lbc===+v){ok=true;break;} }
+    if(!ok) return false;
+  }
+  if(!sel.market.has("all") && !sel.market.has(s.market)) return false;
+  if(!sel.ltsz.has("all")){
+    let ok=false;
+    for(const v of sel.ltsz){ const [a,b]=v.split("-").map(Number); if(s.ltsz>=a&&s.ltsz<b){ok=true;break;} }
+    if(!ok) return false;
+  }
+  if(!sel.apct.has("all")){
+    let ok=false;
+    for(const v of sel.apct){ if(pctMatch(v,s)){ok=true;break;} }
+    if(!ok) return false;
+  }
+  if(!sel.avr.has("all")){
+    let ok=false;
+    for(const v of sel.avr){ if(avrMatch(v,s)){ok=true;break;} }
+    if(!ok) return false;
+  }
+  if(!sel.aamt.has("all")){
+    let ok=false;
+    for(const v of sel.aamt){ if(amtMatch(v,s)){ok=true;break;} }
+    if(!ok) return false;
+  }
+  return true;
+}
+
+function renderLadder(){
+  document.getElementById("statTotal").textContent=D.total;
+  document.getElementById("statSector").textContent=D.industries;
+  document.getElementById("statMax").textContent=D.maxLbc;
+  document.getElementById("statJi").textContent=D.jiCount;
+  document.getElementById("dateBadge").textContent="数据日期 "+D.date;
+  document.getElementById("viewLadder").innerHTML = D.ladder.map(g=>{
+    const list=g.stocks.filter(matchSearch);
+    if(!list.length) return "";
+    const chips=list.map(s=>{
+      let tags="";
+      if(showEnergy) tags=s.baby.filter(tagVisible).map(t=>`<span class="tag ${tagClass(t)}">${t}</span>`).join("");
+      const long = s.long?`<span class="tag t-long">${s.long}</span>`:"";
+      const ind = s.industry?`<span class="stock-ind">${s.industry}</span>`:"";
+      return `<div class="stock-chip"><span class="stock-code">${s.code}</span><span class="stock-name">${s.name}</span>${judgeHtml(s.judge)}${long}${tags}${ind}</div>`;
+    }).join("");
+    const bc=Math.min(g.boards,5);
+    return `<div class="section"><div class="section-head"><div class="badge-num b${bc}">${g.boards}</div><div class="section-title">${g.boards>1?g.boards+" 连板":"首板"}</div><div class="section-count">共 ${list.length} 只</div></div><div class="stock-row">${chips}</div></div>`;
+  }).join("");
+}
+
+function renderPicker(){
+  const stocks = allStocks().filter(passFilter).filter(matchSearch);
+  // 按连板高度分组
+  const byBoards={};
+  stocks.forEach(s=>{ (byBoards[s.lbc]=byBoards[s.lbc]||[]).push(s); });
+  const boards=Object.entries(byBoards).sort((a,b)=>b[0]-a[0]);
+  document.getElementById("indGroups").innerHTML = boards.map(([b,arr])=>{
+    const bc=Math.min(+b,5);
+    const chips=arr.map(s=>{
+      let tags="";
+      if(showEnergy) tags=s.baby.filter(tagVisible).map(t=>`<span class="tag ${tagClass(t)}">${t}</span>`).join("");
+      const long = s.long?`<span class="tag t-long">${s.long}</span>`:"";
+      const ind = s.industry?`<span class="stock-ind">${s.industry}</span>`:"";
+      const pc=(s.apct||0)>=0?"up":"down";
+      const ps=(s.apct||0)>=0?"+":""+(s.apct||0)+"%";
+      const amt=s.aamt>=10000?(s.aamt/10000).toFixed(2)+"亿":Math.round(s.aamt||0)+"万";
+      return `<div class="stock-chip"><span class="stock-code">${s.code}</span><span class="stock-name">${s.name}</span>${judgeHtml(s.judge)}${long}${tags}${ind}<span class="auction-pct ${pc}">${ps}</span><span class="auction-amt">额${amt}</span><span class="auction-avr">量比${(s.avr||0).toFixed(1)}</span></div>`;
+    }).join("");
+    return `<div class="section"><div class="section-head"><div class="badge-num b${bc}">${b}</div><div class="section-title">${b>1?b+" 连板":"首板"}</div><div class="section-count">共 ${arr.length} 只</div></div><div class="stock-row">${chips}</div></div>`;
+  }).join("");
+  document.getElementById("scanInfo").innerHTML=`筛选后共 <b>${stocks.length}</b> 只 · 日期 ${D.date}（9:25集合竞价数据）`;
+  document.getElementById("resultList").innerHTML=stocks.slice(0,30).map(s=>
+    `<div class="result-item"><b>${s.name}</b> <span style="color:var(--text-sub)">${s.code}</span> ${judgeHtml(s.judge)} ${s.industry} 竞价${(s.apct||0).toFixed(1)}%</div>`).join("");
+}
+
+function switchView(v){
+  document.querySelectorAll(".view-tab").forEach(t=>t.classList.toggle("active",t.dataset.view===v));
+  document.getElementById("viewLadder").style.display=v==="ladder"?"":"none";
+  document.getElementById("viewPicker").style.display=v==="picker"?"":"none";
+  if(v==="picker") renderPicker();
+}
+function toggleResult(){document.getElementById("resultFloat").classList.toggle("hidden");}
+
+/* 多选chips */
+document.querySelectorAll(".filter-chips").forEach(g=>{
+  const key=g.dataset.f; if(!key) return;
+  g.querySelectorAll(".fchip").forEach(c=>{
+    c.addEventListener("click",()=>{
+      const v=c.dataset.v;
+      if(v==="all"){ sel[key]=new Set(["all"]); g.querySelectorAll(".fchip").forEach(x=>x.classList.toggle("active",x.dataset.v==="all")); }
+      else{
+        sel[key].delete("all");
+        g.querySelector('[data-v="all"]').classList.remove("active");
+        if(sel[key].has(v)){ sel[key].delete(v); c.classList.remove("active"); }
+        else{ sel[key].add(v); c.classList.add("active"); }
+        if(sel[key].size===0){ sel[key].add("all"); g.querySelector('[data-v="all"]').classList.add("active"); }
+      }
+      renderPicker();
+    });
+  });
+});
+
+/* 数字能量 */
+document.getElementById("toggleEnergy").addEventListener("click",function(e){e.stopPropagation();document.getElementById("energyPop").classList.toggle("show");});
+document.addEventListener("click",function(e){if(!e.target.closest("#toggleEnergy"))document.getElementById("energyPop").classList.remove("show");});
+document.getElementById("chkMaster").addEventListener("change",function(){showEnergy=this.checked;document.querySelectorAll(".chk-tag").forEach(c=>c.disabled=!showEnergy);renderLadder();renderPicker();});
+document.querySelectorAll(".chk-tag").forEach(c=>c.addEventListener("change",function(){if(this.checked)visibleTags.add(this.dataset.tag);else visibleTags.delete(this.dataset.tag);renderLadder();renderPicker();}));
+
+renderLadder();
+</script>
+</body>
+</html>
