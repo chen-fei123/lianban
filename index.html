@@ -257,7 +257,7 @@ function searchByName(name){
     };
     const s=document.createElement("script");
     s.id="se_"+cb;
-    s.src="http://searchapi.eastmoney.com/api/suggest/get?input="+encodeURIComponent(name)+"&type=14&token=D43BF722C8E33BDC906FB84D85E326E8&count=5&cb="+cb;
+    s.src="https://searchapi.eastmoney.com/api/suggest/get?input="+encodeURIComponent(name)+"&type=14&token=D43BF722C8E33BDC906FB84D85E326E8&count=5&cb="+cb;
     s.onerror=()=>{ window[cb]=undefined; reject("err"); };
     document.head.appendChild(s);
     setTimeout(()=>{ if(window[cb]){ window[cb]=undefined; reject("timeout"); } },5000);
@@ -289,7 +289,7 @@ function searchExternal(code){
     const varName="v_"+prefix+code;
     window[varName]=undefined;
     const s=document.createElement("script");
-    s.src="http://qt.gtimg.cn/q="+prefix+code;
+    s.src="https://qt.gtimg.cn/q="+prefix+code;
     s.onload=function(){
       try{
         const raw=window[varName];
