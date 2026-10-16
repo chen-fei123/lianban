@@ -278,20 +278,21 @@ async function loadData(){
 
 async function fetchQuotes(codes){
   const result={};
+  if(!codes.length) return result;
   const ut="fa5fd1943c7b386f172d6893dbfba10b";
-  for(const code of codes){
-    const market=code.startsWith("60")?"1":"0";
-    try{
-      const r=await fetch(`https://push2.eastmoney.com/api/qt/stock/get?secid=${market}.${code}&fields=f43,f57,f58,f60,f170&ut=${ut}`);
-      const j=await r.json();
-      if(j.data){
-        result[code]={
-          rtPrice:(j.data.f43||0)/100,
-          rtPct:(j.data.f170||0)/100
+  const secids=codes.map(c=>(c.startsWith("60")?"1.":"0.")+c).join(",");
+  try{
+    const r=await fetch(`https://push2.eastmoney.com/api/qt/ulist.np/get?secids=${secids}&fields=f2,f3,f12,f14&ut=${ut}`);
+    const j=await r.json();
+    if(j.data && j.data.diff){
+      j.data.diff.forEach(item=>{
+        result[item.f12]={
+          rtPrice:(item.f2||0)/100,
+          rtPct:(item.f3||0)/100
         };
-      }
-    }catch(e){}
-  }
+      });
+    }
+  }catch(e){console.error("quotes err",e);}
   return result;
 }
 
