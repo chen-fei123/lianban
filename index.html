@@ -276,42 +276,25 @@ async function loadData(){
   renderLadder();
 }
 
-function fetchQuotes(codes){
-  return new Promise(resolve=>{
-    const result={};
-    const batches=[];
-    for(let i=0;i<codes.length;i+=20) batches.push(codes.slice(i,i+20));
-    let done=0;
-    batches.forEach(batch=>{
-      const q=batch.map(c=>(c.startsWith("60")?"sh":"sz")+c).join(",");
-      const s=document.createElement("script");
-      s.src="https://qt.gtimg.cn/q="+q;
-      s.onload=function(){
-        batch.forEach(c=>{
-          const varName="v_"+(c.startsWith("60")?"sh":"sz")+c;
-          try{
-            const raw=window[varName];
-            if(!raw) return;
-            const p=raw.split("~");
-            if(p.length<50) return;
-            const op=parseFloat(p[5])||0, pc=parseFloat(p[4])||0;
-            result[c]={
-              apct:pc?Math.round((op-pc)/pc*10000)/100:0,
-              aamt:parseFloat(p[37])||0,
-              avr:parseFloat(p[49])||0,
-              rtPct:parseFloat(p[32])||0,
-              rtPrice:parseFloat(p[3])||0
-            };
-          }catch(e){}
-        });
-        document.head.removeChild(s);
-        done++; if(done===batches.length) resolve(result);
-      };
-      s.onerror=function(){ document.head.removeChild(s); done++; if(done===batches.length) resolve(result); };
-      document.head.appendChild(s);
-    });
-  });
+async function fetchQuotes(codes){
+  const result={};
+  const ut="fa5fd1943c7b386f172d6893dbfba10b";
+  for(const code of codes){
+    const market=code.startsWith("60")?"1":"0";
+    try{
+      const r=await fetch(`https://push2.eastmoney.com/api/qt/stock/get?secid=${market}.${code}&fields=f43,f57,f58,f60,f170&ut=${ut}`);
+      const j=await r.json();
+      if(j.data){
+        result[code]={
+          rtPrice:(j.data.f43||0)/100,
+          rtPct:(j.data.f170||0)/100
+        };
+      }
+    }catch(e){}
+  }
+  return result;
 }
+
 function onSearch(v){
   searchKw=v.trim().toLowerCase();
   const ext=document.getElementById("extResult");
@@ -338,12 +321,13 @@ function onSearch(v){
 }
 function showExtResult(info){
   const tags=info.tags.map(t=>'<span class="tag '+tagClass(t)+'">'+t+'</span>').join("");
+  const rtPct = info.pct!==undefined?`<span class="auction-pct ${info.pct>=0?'up':'down'}">${info.pct>=0?'+':''}${info.pct}%</span>`:"";
+  const rt = info.price!==undefined?`<span class="stock-price">${info.price}</span>`:"";
   document.getElementById("extBody").innerHTML=
     '<div class="stock-chip" style="font-size:14px;padding:10px 16px">'+
     '<span class="stock-code">'+info.code+'</span>'+
     '<span class="stock-name">'+info.name+'</span>'+
-    judgeHtml(info.judge)+tags+
-    '<span style="color:var(--text-sub);font-size:12px">现价'+info.price+' 涨跌'+info.pct+'%</span>'+
+    rt+rtPct+judgeHtml(info.judge)+tags+
     '</div>';
 }
 function searchByName(name){
@@ -474,7 +458,7 @@ setInterval(async ()=>{
     if(q){ s.rtPct = q.rtPct||s.rtPct; s.rtPrice = q.rtPrice||s.rtPrice; }
   }));
   renderLadder();
-}, 10000);
+}, 3000);
 </script>
 </body>
 </html>
