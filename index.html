@@ -462,6 +462,19 @@ document.getElementById("chkMaster").addEventListener("change",function(){showEn
 document.querySelectorAll(".chk-tag").forEach(c=>c.addEventListener("change",function(){if(this.checked)visibleTags.add(this.dataset.tag);else visibleTags.delete(this.dataset.tag);renderLadder();}));
 
 loadData();
+
+// 每30秒自动刷新实时行情
+setInterval(async ()=>{
+  if(!D.ladder.length) return;
+  const codes = [];
+  D.ladder.forEach(g=>g.stocks.forEach(s=>codes.push(s.code)));
+  const quotes = await fetchQuotes(codes);
+  D.ladder.forEach(g=>g.stocks.forEach(s=>{
+    const q = quotes[s.code];
+    if(q){ s.rtPct = q.rtPct||s.rtPct; s.rtPrice = q.rtPrice||s.rtPrice; }
+  }));
+  renderLadder();
+}, 10000);
 </script>
 </body>
 </html>
