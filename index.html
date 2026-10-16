@@ -164,6 +164,7 @@ let D = {date:"",yest:"",total:0,maxLbc:0,jiCount:0,industries:0,ladder:[]};
 let showEnergy = true;
 let visibleTags = new Set(["生气","延年","天医","伏位","绝命","祸害","六煞","五鬼"]);
 let searchKw = "";
+let extStock = null; // 当前外部搜索的股票
 const sel = {lbc:new Set(["all"]), market:new Set(["all"]), ltsz:new Set(["all"])};
 
 function passFilter(s){
@@ -321,6 +322,7 @@ function onSearch(v){
   renderLadder();
 }
 function showExtResult(info){
+  extStock = {code: info.code, name: info.name, tags: info.tags, judge: info.judge};
   const tags=info.tags.map(t=>'<span class="tag '+tagClass(t)+'">'+t+'</span>').join("");
   const rtPct = info.pct!==undefined?`<span class="auction-pct ${info.pct>=0?'up':'down'}">${info.pct>=0?'+':''}${info.pct}%</span>`:"";
   const rt = info.price!==undefined?`<span class="stock-price">${info.price}</span>`:"";
@@ -448,17 +450,27 @@ document.querySelectorAll(".chk-tag").forEach(c=>c.addEventListener("change",fun
 
 loadData();
 
-// 每30秒自动刷新实时行情
+// 每3秒自动刷新实时行情
 setInterval(async ()=>{
-  if(!D.ladder.length) return;
   const codes = [];
   D.ladder.forEach(g=>g.stocks.forEach(s=>codes.push(s.code)));
+  if(extStock) codes.push(extStock.code);
+  if(!codes.length) return;
   const quotes = await fetchQuotes(codes);
   D.ladder.forEach(g=>g.stocks.forEach(s=>{
     const q = quotes[s.code];
     if(q){ s.rtPct = q.rtPct||s.rtPct; s.rtPrice = q.rtPrice||s.rtPrice; }
   }));
   renderLadder();
+  // 更新外部搜索结果
+  if(extStock){
+    const q = quotes[extStock.code];
+    if(q){
+      extStock.price = q.rtPrice;
+      extStock.pct = q.rtPct;
+      showExtResult(extStock);
+    }
+  }
 }, 3000);
 </script>
 </body>
