@@ -273,7 +273,7 @@ async function loadData(){
       ltsz:Math.round((s.ltsz||0)/1e8*10)/10,
       hs:s.hs||0, market:marketOf(code),
       baby:babyTags(code), judge:babyJudge(code),
-      apct:q.apct||0, aamt:q.aamt||0, avr:q.avr||0
+      apct:q.apct||0, aamt:q.aamt||0, avr:q.avr||0, rtPct:q.rtPct||0
     };
   });
 
@@ -324,7 +324,8 @@ function fetchQuotes(codes){
             result[c]={
               apct:pc?Math.round((op-pc)/pc*10000)/100:0,
               aamt:parseFloat(p[37])||0,
-              avr:parseFloat(p[49])||0
+              avr:parseFloat(p[49])||0,
+              rtPct:parseFloat(p[32])||0
             };
           }catch(e){}
         });
@@ -525,7 +526,8 @@ function renderLadder(){
       if(showEnergy) tags=s.baby.filter(tagVisible).map(t=>`<span class="tag ${tagClass(t)}">${t}</span>`).join("");
       const long = s.long?`<span class="tag t-long">${s.long}</span>`:"";
       const ind = s.industry?`<span class="stock-ind">${s.industry}</span>`:"";
-      return `<div class="stock-chip"><span class="stock-code">${s.code}</span><span class="stock-name">${s.name}</span>${judgeHtml(s.judge)}${long}${tags}${ind}</div>`;
+      const rt = s.rtPct?`<span class="auction-pct ${s.rtPct>=0?'up':'down'}">${s.rtPct>=0?'+':''}${s.rtPct}%</span>`:"";
+      return `<div class="stock-chip"><span class="stock-code">${s.code}</span><span class="stock-name">${s.name}</span>${rt}${judgeHtml(s.judge)}${long}${tags}${ind}</div>`;
     }).join("");
     const bc=Math.min(g.boards,5);
     return `<div class="section"><div class="section-head"><div class="badge-num b${bc}">${g.boards}</div><div class="section-title">${g.boards>1?g.boards+" 连板":"首板"}</div><div class="section-count">共 ${list.length} 只</div></div><div class="stock-row">${chips}</div></div>`;
@@ -548,7 +550,8 @@ function renderPicker(){
       const pc=(s.apct||0)>=0?"up":"down";
       const ps=(s.apct||0)>=0?"+":""+(s.apct||0)+"%";
       const amt=s.aamt>=10000?(s.aamt/10000).toFixed(2)+"亿":Math.round(s.aamt||0)+"万";
-      return `<div class="stock-chip"><span class="stock-code">${s.code}</span><span class="stock-name">${s.name}</span>${judgeHtml(s.judge)}${long}${tags}${ind}<span class="auction-pct ${pc}">${ps}</span><span class="auction-amt">额${amt}</span><span class="auction-avr">量比${(s.avr||0).toFixed(1)}</span></div>`;
+      const rt = s.rtPct?`<span class="auction-pct ${s.rtPct>=0?'up':'down'}" style="font-weight:700">${s.rtPct>=0?'+':''}${s.rtPct}%</span>`:"";
+      return `<div class="stock-chip"><span class="stock-code">${s.code}</span><span class="stock-name">${s.name}</span>${rt}${judgeHtml(s.judge)}${long}${tags}${ind}<span class="auction-pct ${pc}">开${ps}</span><span class="auction-amt">额${amt}</span><span class="auction-avr">量比${(s.avr||0).toFixed(1)}</span></div>`;
     }).join("");
     return `<div class="section"><div class="section-head"><div class="badge-num b${bc}">${b}</div><div class="section-title">${b>1?b+" 连板":"首板"}</div><div class="section-count">共 ${arr.length} 只</div></div><div class="stock-row">${chips}</div></div>`;
   }).join("");
