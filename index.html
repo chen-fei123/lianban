@@ -288,7 +288,7 @@ function fetchQuotes(codes){
       s.src="https://qt.gtimg.cn/q="+q;
       s.onload=function(){
         batch.forEach(c=>{
-          const varName=(c.startsWith("60")?"sh":"sz")+c;
+          const varName="v_"+(c.startsWith("60")?"sh":"sz")+c;
           try{
             const raw=window[varName];
             if(!raw) return;
