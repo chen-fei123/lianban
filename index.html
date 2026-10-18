@@ -76,7 +76,7 @@ body{background:var(--bg);color:var(--text);font-family:"PingFang SC","Microsoft
 .lb-count{font-size:11px;color:var(--sub);background:var(--card2);padding:2px 8px;border-radius:8px}
 
 /* 股票行 */
-.stock-row{display:flex;align-items:center;gap:8px;padding:8px 16px;border-bottom:1px solid var(--border);font-size:12px;flex-wrap:nowrap;overflow-x:auto}
+.stock-row{display:flex;align-items:center;gap:8px;padding:8px 16px;border-bottom:1px solid var(--border);font-size:12px;flex-wrap:nowrap;overflow-x:auto;min-width:900px}
 .stock-row:last-child{border-bottom:none}
 .stock-row:hover{background:var(--card2)}
 .s-idx{color:var(--sub);font-size:11px;width:20px;flex-shrink:0}
@@ -263,7 +263,7 @@ body{background:var(--bg);color:var(--text);font-family:"PingFang SC","Microsoft
           </div>
         </div>
       </div>
-      <div id="jxResult" style="margin-top:10px;min-height:200px;overflow-x:auto"></div>
+      <div id="jxResult" style="margin-top:10px;min-height:200px;overflow-x:auto;-webkit-overflow-scrolling:touch"></div>
     </div>
   </div>
 </div>
